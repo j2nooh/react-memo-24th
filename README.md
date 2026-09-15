@@ -1,9 +1,11 @@
 # React Memo
 
-1주차에 Vanilla JavaScript로 만든 메모 앱을 React로 옮기는 프로젝트입니다.
+1주차에 Vanilla JavaScript로 만든 메모 앱을 2주차에 React로 전환하고,
+3주차에는 로그인, 회원가입과 API 연동을 추가하는 프로젝트입니다.
 
-[1주차 Vanilla Memo](https://github.com/j2nooh/vanilla-memo-24th)
-[2주차 과제 안내](docs/assignment.md)
+- [1주차 Vanilla Memo](https://github.com/j2nooh/vanilla-memo-24th)
+- [2주차 과제 안내](docs/assignment-week2.md)
+- [3주차 과제 안내](docs/assignment-week3.md)
 
 ## 사용한 기술 스택
 
@@ -13,10 +15,14 @@
 | 언어 | TypeScript |
 | 개발 서버 및 빌드 | Vite |
 | 스타일 | Tailwind CSS |
+| 상태 관리 | React Hooks, Zustand (3주차 도입) |
+| 라우팅 | React Router |
 | 코드 검사 | ESLint |
 | 코드 포맷 | Prettier |
 
 ## 구현 기능
+
+### 2주차: React 전환
 
 1주차 Memo 기능을 React로 전환하며, 상태 관리는 전역 상태관리 라이브러리 없이 React Hooks로 구현합니다.
 
@@ -32,7 +38,18 @@
 - [x] localStorage를 통한 메모 저장 및 복원
 - [x] 반응형 레이아웃 및 인터랙션 스타일 보완
 - [x] 메모 앱 favicon 적용
-- [ ] 추가 기능 및 디자인 구현 (선택)
+
+### 3주차: 인증 및 API 연동
+
+- [x] Zustand 및 React Router 설정
+- [ ] Figma 기준 로그인 화면 및 입력 상태 구현
+- [ ] 회원가입 화면 및 입력값 검증 구현
+- [ ] 로그인 및 회원가입 API 연동
+- [ ] Zustand를 통한 인증 상태 관리
+- [ ] API 로딩, 성공, 실패 상태별 UI 처리
+- [ ] 인증 화면 반응형 레이아웃 및 접근성 검증
+- [ ] 메모 작성, 수정, 삭제 API 연동
+- [ ] 마이페이지 UI 구현
 
 ## 파일 구조
 
@@ -41,7 +58,8 @@
 ```text
 react-memo-24th/
 ├── docs/
-│   └── assignment.md               # 2주차 과제 안내글
+│   ├── assignment-week2.md         # 2주차 과제 안내글
+│   └── assignment-week3.md         # 3주차 과제 안내글
 ├── public/                         # 경로로 직접 제공하는 정적 파일
 ├── src/
 │   ├── assets/
@@ -66,7 +84,12 @@ react-memo-24th/
 │   ├── hooks/
 │   │   └── useStoredMemos.ts     # 메모 상태와 브라우저 저장 동기화
 │   ├── pages/
-│   │   └── MemoPage.tsx            # 메모 상태 관리, 조회/작성/수정/삭제 처리
+│   │   ├── auth/
+│   │   │   ├── LoginPage.tsx      # 로그인 페이지
+│   │   │   └── SignupPage.tsx     # 회원가입 페이지
+│   │   └── MemoPage.tsx           # 메모 상태 관리, 조회/작성/수정/삭제 처리
+│   ├── routes/
+│   │   └── AppRouter.tsx          # 로그인, 회원가입, 메모 페이지 경로
 │   ├── styles/
 │   │   ├── memoCategoryStyles.ts  # 카드와 상세 모달의 카테고리별 스타일
 │   │   └── theme.css              # 색상 및 타이포그래피 토큰
@@ -81,6 +104,7 @@ react-memo-24th/
 │   └── main.tsx                   # React 앱 진입점
 ├── index.html           # React 앱을 표시할 HTML 문서
 ├── package.json         # 의존성 및 실행 명령
+├── vercel.json          # 배포 환경의 SPA 경로 재작성 설정
 ├── vite.config.ts       # Vite 및 플러그인 설정
 └── eslint.config.js     # 코드 검사 규칙
 ```
