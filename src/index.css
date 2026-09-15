@@ -1,0 +1,33 @@
+@import 'tailwindcss';
+@import './styles/theme.css';
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('./assets/fonts/PretendardVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  html {
+    min-height: 100%;
+    background-color: var(--color-blue-01);
+  }
+
+  body {
+    min-height: 100dvh;
+    font-family: var(--font-sans);
+    color: var(--color-black-00);
+    background-color: var(--color-blue-01);
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-blue-05);
+    outline-offset: 4px;
+  }
+}

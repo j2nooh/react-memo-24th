@@ -1,0 +1,48 @@
+@theme {
+  --font-sans: 'Pretendard', sans-serif;
+
+  --color-blue-01: #e4edff;
+  --color-blue-02: #aac8ff;
+  --color-blue-03: #a2c1ff;
+  --color-blue-04: #5590ff;
+  --color-blue-05: #0055f5;
+  --color-blue-06: #0037a3;
+  --color-blue-07: #001b51;
+  --color-white-00: #fafafa;
+  --color-gray-01: #e0e2e5;
+  --color-gray-02: #a6b7cb;
+  --color-gray-03: #677b93;
+  --color-gray-04: #485668;
+  --color-gray-05: #29313c;
+  --color-black-00: #121416;
+  --color-point: #ff5656;
+  --color-memo-daily: #7ba7ff;
+  --color-memo-star: #e0e2e5;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --text-display-large: 48px;
+  --text-display-large--line-height: 56px;
+  --text-heading-large: 32px;
+  --text-heading-large--line-height: 40px;
+  --text-heading-medium: 24px;
+  --text-heading-medium--line-height: 32px;
+  --text-heading-small: 20px;
+  --text-heading-small--line-height: 28px;
+  --text-body-large: 18px;
+  --text-body-large--line-height: 28px;
+  --text-body-medium: 16px;
+  --text-body-medium--line-height: 24px;
+  --text-body-small: 14px;
+  --text-body-small--line-height: 20px;
+  --text-field-medium: 16px;
+  --text-field-medium--line-height: 24px;
+  --text-action-medium: 18px;
+  --text-action-medium--line-height: 28px;
+  --text-action-small: 16px;
+  --text-action-small--line-height: 24px;
+}

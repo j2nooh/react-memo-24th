@@ -1,74 +1,103 @@
-# 2주차 과제: React Memo
+# React Memo
 
-<br>
+1주차에 Vanilla JavaScript로 만든 메모 앱을 React로 옮기는 프로젝트입니다.
 
-# 서론
+[1주차 Vanilla Memo](https://github.com/j2nooh/vanilla-memo-24th)
+[2주차 과제 안내](docs/assignment.md)
 
-안녕하세요 🙌🏻 24기 프론트엔드 운영진 **구민교**입니다.
+## 사용한 기술 스택
 
-다들 1주차 미션인 Vanilla Memo를 만드시느라 수고 많으셨습니다! 1주차 미션을 통해 Vanilla JS로 메모 서비스를 구현하면서 React를 사용하지 않을 때의 불편함을 어느 정도 느껴보셨을 것이라 생각합니다.
+| 구분 | 기술 |
+| --- | --- |
+| UI 라이브러리 | React, React DOM |
+| 언어 | TypeScript |
+| 개발 서버 및 빌드 | Vite |
+| 스타일 | Tailwind CSS |
+| 코드 검사 | ESLint |
+| 코드 포맷 | Prettier |
 
-그리하여 이번 미션은, 1주차 스터디 미션으로 주어진 Memo 서비스를 **React**로 리팩토링하는 것입니다❗️
+## 구현 기능
 
-기존에 React를 어느 정도 사용해보신 분들께는 더 효율적인 컴포넌트 구조와 디자인 패턴을 고민해보는 주차가 될 것이고, 아직 React를 깊게 접해보지 못한 분들께는 기존 애플리케이션을 React로 포팅하는 과정을 통해 왜 React가 등장하게 되었는지, 그리고 컴포넌트 기반 개발 방식이 Vanilla JS와 어떤 차이가 있는지 체감해보는 주차가 될 것이라 생각합니다.
+1주차 Memo 기능을 React로 전환하며, 상태 관리는 전역 상태관리 라이브러리 없이 React Hooks로 구현합니다.
 
-이번 미션에서는 단순히 화면을 그대로 옮기는 것에 그치지 않고, **어떤 기준으로 컴포넌트를 나누고 어떻게 재사용할 수 있을지** 충분히 고민해보시기 바랍니다. 같은 화면이라도 다양한 컴포넌트 구조가 나올 수 있는 만큼, 본인이 생각하기에 가장 효율적인 방식으로 구현해보시면 좋겠습니다.
+- [x] 개발 환경 설정 (Vite, React, TypeScript, Tailwind CSS, ESLint, Prettier)
+- [x] Figma 기준 디자인 시스템 및 기본 레이아웃 구성
+- [x] 메모 목록 및 재사용 가능한 카드 컴포넌트 구현
+- [x] 메모 검색 및 태그 필터 구현
+- [x] 메모 고정 및 고정 목록 분리
+- [x] 메모 상세 조회 및 모달 구현
+- [x] 메모 작성 및 수정 기능 구현
+- [x] 작성 취소 확인 및 완료 안내 구현
+- [x] 메모 삭제 및 삭제 확인, 메모가 없는 화면 구현
+- [x] localStorage를 통한 메모 저장 및 복원
+- [x] 반응형 레이아웃 및 인터랙션 스타일 보완
+- [ ] 추가 기능 및 디자인 구현 (선택)
 
-또한 이번 과제에서는 React 프로젝트 생성 시 **Vite 사용이 필수입니다.** 과제를 진행하면서 Vite를 활용한 프로젝트 환경 세팅과 함께 React의 기본적인 프로젝트 구조에도 자연스럽게 익숙해져 보세요.
+## 파일 구조
 
-과제를 진행하다가 막히는 부분이 있더라도, 우선은 스스로 공부하고 찾아보며 해결해보는 과정을 권장드립니다. 다만 미션과 관련해 운영진의 도움이 필요하다면, 언제든 프론트엔드 카카오톡방에 질문 남겨주세요!
+레포 루트 기준의 주요 파일입니다.
 
-<br>
+```text
+react-memo-24th/
+├── docs/
+│   └── assignment.md               # 2주차 과제 안내글
+├── public/                         # 경로로 직접 제공하는 정적 파일
+├── src/
+│   ├── assets/
+│   │   ├── fonts/                  # Pretendard 폰트
+│   │   └── icons/                  # SVG 아이콘
+│   ├── components/
+│   │   ├── common/
+│   │   │   ├── ActionModal.tsx    # 확인 및 완료 안내 모달
+│   │   │   ├── IconButton.tsx     # 공용 아이콘 버튼 (공통 UI)
+│   │   │   └── Modal.tsx          # 모달 표시, 닫기 및 배경 스크롤 제어
+│   │   └── memo/
+│   │       ├── MemoCard.tsx       # 카테고리별 메모 카드 UI
+│   │       ├── MemoEditor.tsx     # 메모 작성/수정 입력 및 폼 검증
+│   │       ├── MemoCategorySelect.tsx # 메모의 필수 태그 선택
+│   │       ├── MemoDetailModal.tsx # 메모 상세 내용과 수정, 삭제 처리
+│   │       ├── MemoList.tsx       # 메모 목록 및 검색, 메모 빈 화면
+│   │       ├── MemoToolbar.tsx    # 검색 영역과 상단 버튼 배치
+│   │       ├── MemoSearchBar.tsx  # 검색어 입력 및 지우기
+│   │       └── MemoTagFilter.tsx  # 태그 선택 및 메뉴 열림 상태
+│   ├── data/
+│   │   └── memos.ts              # 샘플 데이터
+│   ├── hooks/
+│   │   └── useStoredMemos.ts     # 메모 상태와 브라우저 저장 동기화
+│   ├── pages/
+│   │   └── MemoPage.tsx            # 메모 상태 관리, 조회/작성/수정/삭제 처리
+│   ├── styles/
+│   │   ├── memoCategoryStyles.ts  # 카드와 상세 모달의 카테고리별 스타일
+│   │   └── theme.css              # 색상 및 타이포그래피 토큰
+│   ├── types/
+│   │   └── memo.ts                # 메모 및 카테고리 타입
+│   ├── utils/
+│   │   ├── getTodayDate.ts       # 로컬 시간 기준 오늘 날짜
+│   │   ├── memoStorage.ts        # localStorage 저장, 복원 및 데이터 검증
+│   │   └── filterMemos.ts        # 검색어와 태그 조건으로 메모 필터링
+│   ├── App.tsx                    # 페이지 연결
+│   ├── index.css                  # Tailwind, 폰트 및 전역 스타일
+│   └── main.tsx                   # React 앱 진입점
+├── index.html           # React 앱을 표시할 HTML 문서
+├── package.json         # 의존성 및 실행 명령
+├── vite.config.ts       # Vite 및 플러그인 설정
+└── eslint.config.js     # 코드 검사 규칙
+```
 
+## 실행 방법
 
-# 과제
+레포 루트에서 실행합니다.
 
-## 🎯 목표
+```bash
+npm ci
+npm run dev
+```
 
-- React의 기초를 이해합니다.
-- React를 통한 어플리케이션 상태 관리 방법을 이해합니다.
-- React Hooks에 대한 기초를 이해합니다.
-- React의 컴포넌트 기반 개발 방식을 이해하고, UI를 적절한 단위로 분리하여 구현합니다.
-- Vite를 통한 React 프로젝트 개발환경 구축을 익힙니다.
-- Tailwind CSS를 활용한 유틸리티 클래스 기반 스타일링 방식을 익힙니다.
+실행 후 터미널에 표시된 로컬 주소로 접속합니다.
 
-## 📅 기한
-
-- 2026년 9월 16일 수요일 14:00까지
-
-## 💬 Review Questions
-
-- Virtual DOM은 무엇이고, 이를 사용함으로써 얻는 이점은 무엇인가요?
-- React에서 컴포넌트를 분리하는 기준은 무엇이며, 컴포넌트 분리를 통해 얻을 수 있는 이점은 무엇인가요?
-- React 컴포넌트의 생명주기에 대해서 설명해주세요.
-
-## 💡 필수 요건
-
-- 1주차에 Vanilla JS로 구현했던 Memo 서비스를 React로 전환합니다.
-- 피그마에 제공된 UI를 기준으로 필요한 컴포넌트를 모두 구현합니다.
-- Tailwind CSS를 사용합니다.
-- React Hooks만을 사용하여 상태를 관리합니다. (전역 상태관리 라이브러리 사용 XX)
-- Vite를 활용하여 React 프로젝트 환경 구축을 진행합니다.
-
-## ✅ 선택 요건
-
-- 기존 Memo 서비스에 여러분들이 추가하고 싶은 기능과 디자인을 자유롭게 추가해보세요.
-- TypeScript를 활용하여 프로젝트를 진행해보세요.
-- 시간이 된다면 다음 주차에 이어서 구현할 메모 작성 완료 부분의 UI를 미리 구현해보세요! 미리 구현해두면 여러분의 추석 연휴를 지킬 수 있습니다 🍂
-
-<br>
-
-
-# 링크 및 참고자료
-
-- [React Docs 주요 개념](https://react.dev/learn)
-- [React Docs Hooks](https://react.dev/reference/react)
-- [React useEffect 완벽 가이드](https://overreacted.io/ko/a-complete-guide-to-useeffect/)
-- [컴포넌트 네이밍을 위한 자바스크립트 네이밍 컨벤션](https://velog.io/@cada/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%EC%8A%A4%ED%83%80%EC%9D%BC-%EA%B0%80%EC%9D%B4%EB%93%9C-%EB%84%A4%EC%9D%B4%EB%B0%8D-%EC%BB%A8%EB%B2%A4%EC%85%98-%ED%8E%B8)
-- [useState, useEffect Hooks](https://velog.io/@velopert/react-hooks#1-usestate)
-- [Tailwind CSS 공식 문서](https://tailwindcss.com/docs/installation/using-vite)
-- [VSCode Prettier 설정](https://velog.io/@gangk_99/VS-Code-Prettier-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0)
-- [Create React App (CRA) 지원 종료 공식 문서](https://react.dev/blog/2025/02/14/sunsetting-create-react-app)
-- [Create React App 지원 종료 관련 OKKY 커뮤니티 게시글](https://okky.kr/articles/1527414)
-- [CRA 대신 Vite로 React 프로젝트 시작하기](https://www.daleseo.com/vite-react/)
-- [Vite 실무 적용기 - 설명 + 프로젝트 설정](https://blog.hectodata.co.kr/bonjour-vite/)
+| 명령 | 용도 |
+| --- | --- |
+| `npm run build` | 타입 검사 및 배포용 빌드 |
+| `npm run lint` | 코드 규칙 검사 |
+| `npm run format` | 코드 포맷 적용 |
+| `npm run format:check` | 코드 포맷 검사 |
