@@ -15,7 +15,7 @@
 | 언어 | TypeScript |
 | 개발 서버 및 빌드 | Vite |
 | 스타일 | Tailwind CSS |
-| 상태 관리 | React Hooks, Zustand (3주차 도입) |
+| 상태 관리 | React Hooks, Zustand |
 | 라우팅 | React Router |
 | 코드 검사 | ESLint |
 | 코드 포맷 | Prettier |
@@ -42,7 +42,7 @@
 ### 3주차: 인증 및 API 연동
 
 - [x] Zustand 및 React Router 설정
-- [ ] Figma 기준 로그인 화면 및 입력 상태 구현
+- [x] Figma 기준 로그인 화면 및 입력 상태 구현
 - [ ] 회원가입 화면 및 입력값 검증 구현
 - [ ] 로그인 및 회원가입 API 연동
 - [ ] Zustand를 통한 인증 상태 관리
@@ -66,6 +66,9 @@ react-memo-24th/
 │   │   ├── fonts/                  # Pretendard 폰트
 │   │   └── icons/                  # SVG 아이콘
 │   ├── components/
+│   │   ├── auth/
+│   │   │   ├── AuthField.tsx     # 인증 폼의 입력 필드와 오류 안내
+│   │   │   └── AuthLayout.tsx    # 로그인, 회원가입 공통 화면 배치
 │   │   ├── common/
 │   │   │   ├── ActionModal.tsx    # 확인 및 완료 안내 모달
 │   │   │   ├── IconButton.tsx     # 공용 아이콘 버튼 (공통 UI)
