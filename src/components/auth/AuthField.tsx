@@ -23,7 +23,7 @@ function AuthField({ label, errorMessage, ...props }: AuthFieldProps) {
         className="h-14 w-full rounded-xl bg-white-00 px-5 text-field-medium text-gray-04 placeholder:text-gray-02 disabled:cursor-not-allowed disabled:bg-gray-01"
       />
       {errorMessage && (
-        <p id={errorId} className="text-body-small text-point">
+        <p id={errorId} role="alert" className="text-body-small text-point">
           {errorMessage}
         </p>
       )}
