@@ -9,7 +9,14 @@ import { useAuthStore } from '../stores/authStore';
 function MyPage() {
   const navigate = useNavigate();
   const email = useAuthStore((state) => state.email);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
   const nickname = email?.split('@')[0] ?? '닉네임';
+
+  function handleLogout() {
+    clearAuth();
+    useAuthStore.persist.clearStorage();
+    navigate('/login', { replace: true });
+  }
 
   return (
     <main className="mx-auto min-h-dvh w-full max-w-[1440px] bg-blue-01 px-[clamp(32px,calc((100%_-_1200px)/2),120px)] pt-[72px] pb-14 max-[900px]:px-8 max-[900px]:pt-12 max-sm:px-4 max-sm:pt-6">
@@ -66,6 +73,13 @@ function MyPage() {
             <span className="text-body-small font-bold text-blue-07">휴지통</span>
           </li>
         </ul>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mx-auto mt-8 block text-body-small font-medium text-gray-04 decoration-gray-03 underline-offset-4 transition-colors hover:text-blue-07"
+        >
+          로그아웃
+        </button>
       </section>
     </main>
   );
