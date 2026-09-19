@@ -44,8 +44,8 @@
 - [x] Zustand 및 React Router 설정
 - [x] Figma 기준 로그인 화면 및 입력 상태 구현
 - [x] 회원가입 화면 및 입력값 검증 구현
+- [x] 공통 API 요청 함수 및 인증 상태 저장소 구성
 - [ ] 로그인 및 회원가입 API 연동
-- [ ] Zustand를 통한 인증 상태 관리
 - [ ] API 로딩, 성공, 실패 상태별 UI 처리
 - [ ] 인증 화면 반응형 레이아웃 및 접근성 검증
 - [ ] 메모 작성, 수정, 삭제 API 연동
@@ -62,6 +62,9 @@ react-memo-24th/
 │   └── assignment-week3.md         # 3주차 과제 안내글
 ├── public/                         # 경로로 직접 제공하는 정적 파일
 ├── src/
+│   ├── api/
+│   │   ├── auth.ts                 # 로그인, 회원가입 API 요청
+│   │   └── client.ts               # 공통 요청, 응답 및 오류 처리
 │   ├── assets/
 │   │   ├── fonts/                  # Pretendard 폰트
 │   │   └── icons/                  # SVG 아이콘
@@ -93,10 +96,14 @@ react-memo-24th/
 │   │   └── MemoPage.tsx           # 메모 상태 관리, 조회/작성/수정/삭제 처리
 │   ├── routes/
 │   │   └── AppRouter.tsx          # 로그인, 회원가입, 메모 페이지 경로
+│   ├── stores/
+│   │   └── authStore.ts            # access token과 이메일 전역 상태
 │   ├── styles/
 │   │   ├── memoCategoryStyles.ts  # 카드와 상세 모달의 카테고리별 스타일
 │   │   └── theme.css              # 색상 및 타이포그래피 토큰
 │   ├── types/
+│   │   ├── api.ts                 # 공통 API 응답 타입
+│   │   ├── auth.ts                # 인증 API 요청과 응답 타입
 │   │   └── memo.ts                # 메모 및 카테고리 타입
 │   ├── utils/
 │   │   ├── getTodayDate.ts       # 로컬 시간 기준 오늘 날짜
@@ -106,6 +113,7 @@ react-memo-24th/
 │   ├── index.css                  # Tailwind, 폰트 및 전역 스타일
 │   └── main.tsx                   # React 앱 진입점
 ├── index.html           # React 앱을 표시할 HTML 문서
+├── .env.example          # API 기본 주소 환경 변수 예시
 ├── package.json         # 의존성 및 실행 명령
 ├── vercel.json          # 배포 환경의 SPA 경로 재작성 설정
 ├── vite.config.ts       # Vite 및 플러그인 설정
@@ -118,6 +126,7 @@ react-memo-24th/
 
 ```bash
 npm ci
+cp .env.example .env
 npm run dev
 ```
 
