@@ -52,6 +52,7 @@
 - [x] 마이페이지 UI 및 메모 화면 진입 경로 구현
 - [x] 로그아웃 및 브라우저 인증 정보 삭제
 - [x] 메모 목록 API 조회 및 로딩, 오류 상태 처리
+- [x] 인증 만료 시 인증 정보 삭제 및 로그인 화면 이동
 - [ ] 메모 작성, 수정, 삭제 API 연동
 
 ## 파일 구조
@@ -89,11 +90,8 @@ react-memo-24th/
 │   │       ├── MemoToolbar.tsx    # 검색 영역과 상단 버튼 배치
 │   │       ├── MemoSearchBar.tsx  # 검색어 입력 및 지우기
 │   │       └── MemoTagFilter.tsx  # 태그 선택 및 메뉴 열림 상태
-│   ├── data/
-│   │   └── memos.ts              # 샘플 데이터
 │   ├── hooks/
 │   │   ├── useApiMemos.ts        # 서버 메모 목록 조회 상태와 재시도
-│   │   └── useStoredMemos.ts     # 메모 상태와 브라우저 저장 동기화
 │   ├── pages/
 │   │   ├── auth/
 │   │   │   ├── LoginPage.tsx      # 로그인 페이지
@@ -117,7 +115,6 @@ react-memo-24th/
 │   │   ├── getRequestErrorMessage.ts # API, 네트워크 오류 메시지 정리
 │   │   ├── getTodayDate.ts       # 로컬 시간 기준 오늘 날짜
 │   │   ├── mapApiMemoToMemo.ts   # 서버 메모를 카드 UI 데이터로 변환
-│   │   ├── memoStorage.ts        # localStorage 저장, 복원 및 데이터 검증
 │   │   └── filterMemos.ts        # 검색어와 태그 조건으로 메모 필터링
 │   ├── App.tsx                    # 페이지 연결
 │   ├── index.css                  # Tailwind, 폰트 및 전역 스타일
