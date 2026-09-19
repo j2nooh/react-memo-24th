@@ -1,29 +1,65 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, type FormEvent } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
+import { login } from '../../api/auth';
 import AuthField from '../../components/auth/AuthField';
 import AuthLayout from '../../components/auth/AuthLayout';
+import { useAuthStore } from '../../stores/authStore';
+import { getRequestErrorMessage } from '../../utils/getRequestErrorMessage';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const canSubmit = email.trim() !== '' && password !== '';
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!canSubmit || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setErrorMessage('');
+
+    try {
+      const { accessToken } = await login({ email, password });
+
+      setAuth({ accessToken, email });
+      navigate('/memos', { replace: true });
+    } catch (error) {
+      setErrorMessage(getRequestErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <AuthLayout>
       <h1 className="sr-only">로그인</h1>
 
-      <form className="flex flex-col gap-10" onSubmit={(event) => event.preventDefault()}>
+      <form
+        className="flex flex-col gap-10"
+        noValidate
+        aria-busy={isSubmitting}
+        onSubmit={handleSubmit}
+      >
         <div className="flex flex-col gap-4">
           <AuthField
             label="아이디"
             name="email"
-            type="text"
+            type="email"
             autoComplete="username"
             placeholder="아이디를 입력하세요"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            disabled={isSubmitting}
+            onChange={(event) => {
+              setEmail(event.target.value);
+              setErrorMessage('');
+            }}
           />
           <AuthField
             label="비밀번호"
@@ -32,17 +68,22 @@ function LoginPage() {
             autoComplete="current-password"
             placeholder="비밀번호를 입력하세요"
             value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            disabled={isSubmitting}
+            errorMessage={errorMessage}
+            onChange={(event) => {
+              setPassword(event.target.value);
+              setErrorMessage('');
+            }}
           />
         </div>
 
         <div className="flex flex-col items-center gap-7 self-stretch">
           <button
             type="submit"
-            disabled={!canSubmit}
+            disabled={!canSubmit || isSubmitting}
             className="h-14 w-full rounded-xl bg-blue-05 px-5 text-action-medium font-extrabold text-white-00 transition-colors hover:bg-blue-06 disabled:cursor-not-allowed disabled:bg-blue-03 disabled:text-gray-01"
           >
-            로그인
+            {isSubmitting ? '로그인 중...' : '로그인'}
           </button>
 
           <nav
