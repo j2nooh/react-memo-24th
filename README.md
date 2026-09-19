@@ -66,7 +66,8 @@ react-memo-24th/
 ├── src/
 │   ├── api/
 │   │   ├── auth.ts                 # 로그인, 회원가입 API 요청
-│   │   └── client.ts               # 공통 요청, 응답 및 오류 처리
+│   │   ├── client.ts               # 공통 요청, 응답 및 오류 처리
+│   │   └── memos.ts                # 메모 목록 API 요청
 │   ├── assets/
 │   │   ├── fonts/                  # Pretendard 폰트
 │   │   └── icons/                  # SVG 아이콘
@@ -108,6 +109,7 @@ react-memo-24th/
 │   ├── types/
 │   │   ├── api.ts                 # 공통 API 응답 타입
 │   │   ├── auth.ts                # 인증 API 요청과 응답 타입
+│   │   ├── memoApi.ts             # 서버 메모 API 응답 타입
 │   │   └── memo.ts                # 메모 및 카테고리 타입
 │   ├── utils/
 │   │   ├── getRequestErrorMessage.ts # API, 네트워크 오류 메시지 정리
