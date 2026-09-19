@@ -2,8 +2,10 @@ import { useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { login } from '../../api/auth';
+import { ApiError } from '../../api/client';
 import AuthField from '../../components/auth/AuthField';
 import AuthLayout from '../../components/auth/AuthLayout';
+import ActionModal from '../../components/common/ActionModal';
 import { useAuthStore } from '../../stores/authStore';
 import { getRequestErrorMessage } from '../../utils/getRequestErrorMessage';
 
@@ -11,6 +13,7 @@ function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isNetworkError, setIsNetworkError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const setAuth = useAuthStore((state) => state.setAuth);
@@ -31,7 +34,11 @@ function LoginPage() {
       setAuth({ accessToken, email });
       navigate('/memos', { replace: true });
     } catch (error) {
-      setErrorMessage(getRequestErrorMessage(error));
+      if (error instanceof ApiError) {
+        setErrorMessage(getRequestErrorMessage(error));
+      } else {
+        setIsNetworkError(true);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -100,6 +107,14 @@ function LoginPage() {
           </nav>
         </div>
       </form>
+      {isNetworkError && (
+        <ActionModal
+          title="네트워크 연결이 불안정합니다"
+          description="네트워크 상태를 확인해주세요"
+          confirmLabel="확인"
+          onConfirm={() => setIsNetworkError(false)}
+        />
+      )}
     </AuthLayout>
   );
 }
