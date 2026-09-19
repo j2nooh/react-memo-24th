@@ -5,13 +5,13 @@ import MemoDetailModal from '../components/memo/MemoDetailModal';
 import MemoEditor from '../components/memo/MemoEditor';
 import MemoList from '../components/memo/MemoList';
 import MemoToolbar from '../components/memo/MemoToolbar';
-import { useStoredMemos } from '../hooks/useStoredMemos';
+import { useApiMemos } from '../hooks/useApiMemos';
 import type { Memo, MemoCategory, MemoDraft } from '../types/memo';
 import { filterMemos } from '../utils/filterMemos';
 
 function MemoPage() {
   const navigate = useNavigate();
-  const [memos, setMemos] = useStoredMemos();
+  const { memos, setMemos, isLoading, errorMessage, loadMemos } = useApiMemos();
   const [isCreating, setIsCreating] = useState(false);
   const [editingMemoId, setEditingMemoId] = useState<Memo['id'] | null>(null);
   const [selectedMemoId, setSelectedMemoId] = useState<Memo['id'] | null>(null);
@@ -75,7 +75,26 @@ function MemoPage() {
         <p role="status" aria-atomic="true" className="sr-only">
           {isFiltered ? `검색 결과 ${visibleMemos.length}개` : `전체 메모 ${visibleMemos.length}개`}
         </p>
-        {pinnedMemos.length > 0 && (
+        {isLoading && (
+          <div role="status" className="flex min-h-[420px] items-center justify-center text-body-medium text-gray-04">
+            메모를 불러오는 중입니다.
+          </div>
+        )}
+        {!isLoading && errorMessage && (
+          <div className="flex min-h-[420px] flex-col items-center justify-center gap-5 text-center">
+            <p role="alert" className="text-body-medium text-point">
+              {errorMessage}
+            </p>
+            <button
+              type="button"
+              onClick={() => void loadMemos()}
+              className="h-12 rounded-xl bg-blue-05 px-6 text-action-small font-bold text-white-00 transition-colors hover:bg-blue-06"
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+        {!isLoading && !errorMessage && pinnedMemos.length > 0 && (
           <MemoList
             memos={pinnedMemos}
             label="고정된 메모"
@@ -84,7 +103,7 @@ function MemoPage() {
             onCreate={handleOpenCreate}
           />
         )}
-        {unpinnedMemos.length > 0 && (
+        {!isLoading && !errorMessage && unpinnedMemos.length > 0 && (
           <MemoList
             memos={unpinnedMemos}
             label="고정되지 않은 메모"
@@ -93,7 +112,7 @@ function MemoPage() {
             onCreate={handleOpenCreate}
           />
         )}
-        {visibleMemos.length === 0 && (
+        {!isLoading && !errorMessage && visibleMemos.length === 0 && (
           <MemoList
             memos={visibleMemos}
             isFiltered={isFiltered}

@@ -51,6 +51,7 @@
 - [x] 인증 화면 반응형 레이아웃 및 접근성 검증
 - [x] 마이페이지 UI 및 메모 화면 진입 경로 구현
 - [x] 로그아웃 및 브라우저 인증 정보 삭제
+- [x] 메모 목록 API 조회 및 로딩·오류 상태 처리
 - [ ] 메모 작성, 수정, 삭제 API 연동
 
 ## 파일 구조
@@ -91,6 +92,7 @@ react-memo-24th/
 │   ├── data/
 │   │   └── memos.ts              # 샘플 데이터
 │   ├── hooks/
+│   │   ├── useApiMemos.ts        # 서버 메모 목록 조회 상태와 재시도
 │   │   └── useStoredMemos.ts     # 메모 상태와 브라우저 저장 동기화
 │   ├── pages/
 │   │   ├── auth/
@@ -114,6 +116,7 @@ react-memo-24th/
 │   ├── utils/
 │   │   ├── getRequestErrorMessage.ts # API, 네트워크 오류 메시지 정리
 │   │   ├── getTodayDate.ts       # 로컬 시간 기준 오늘 날짜
+│   │   ├── mapApiMemoToMemo.ts   # 서버 메모를 카드 UI 데이터로 변환
 │   │   ├── memoStorage.ts        # localStorage 저장, 복원 및 데이터 검증
 │   │   └── filterMemos.ts        # 검색어와 태그 조건으로 메모 필터링
 │   ├── App.tsx                    # 페이지 연결
