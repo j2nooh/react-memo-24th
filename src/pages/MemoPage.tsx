@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ActionModal from '../components/common/ActionModal';
 import MemoDetailModal from '../components/memo/MemoDetailModal';
 import MemoEditor from '../components/memo/MemoEditor';
@@ -9,6 +10,7 @@ import type { Memo, MemoCategory, MemoDraft } from '../types/memo';
 import { filterMemos } from '../utils/filterMemos';
 
 function MemoPage() {
+  const navigate = useNavigate();
   const [memos, setMemos] = useStoredMemos();
   const [isCreating, setIsCreating] = useState(false);
   const [editingMemoId, setEditingMemoId] = useState<Memo['id'] | null>(null);
@@ -64,6 +66,7 @@ function MemoPage() {
         onKeywordChange={setKeyword}
         onCategoryChange={setCategory}
         onCreate={handleOpenCreate}
+        onProfile={() => navigate('/mypage')}
       />
       <section aria-labelledby="memo-list-title" className="flex w-full flex-1 flex-col gap-5">
         <h2 id="memo-list-title" className="sr-only">

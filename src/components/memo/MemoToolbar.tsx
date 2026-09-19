@@ -5,9 +5,10 @@ import MemoSearchBar, { type MemoSearchBarProps } from './MemoSearchBar';
 
 type MemoToolbarProps = MemoSearchBarProps & {
   onCreate: () => void;
+  onProfile: () => void;
 };
 
-function MemoToolbar({ onCreate, ...props }: MemoToolbarProps) {
+function MemoToolbar({ onCreate, onProfile, ...props }: MemoToolbarProps) {
   const actionClassName =
     'size-20 bg-white-00 p-6 max-[900px]:size-16 max-[900px]:p-4 max-sm:size-14 max-sm:p-3';
 
@@ -22,7 +23,12 @@ function MemoToolbar({ onCreate, ...props }: MemoToolbarProps) {
           onClick={onCreate}
           className={actionClassName}
         />
-        <IconButton label="프로필" icon={profileIcon} disabled className={actionClassName} />
+        <IconButton
+          label="프로필"
+          icon={profileIcon}
+          onClick={onProfile}
+          className={actionClassName}
+        />
       </div>
     </header>
   );

@@ -48,9 +48,9 @@
 - [x] 로그인 API 연동 및 상태별 UI 처리
 - [x] 회원가입 API 연동 및 상태별 UI 처리
 - [x] 인증된 메모 페이지 접근 제어
-- [ ] 인증 화면 반응형 레이아웃 및 접근성 검증
+- [x] 인증 화면 반응형 레이아웃 및 접근성 검증
+- [x] 마이페이지 UI 및 메모 화면 진입 경로 구현
 - [ ] 메모 작성, 수정, 삭제 API 연동
-- [ ] 마이페이지 UI 구현
 
 ## 파일 구조
 
@@ -95,8 +95,9 @@ react-memo-24th/
 │   │   │   ├── LoginPage.tsx      # 로그인 페이지
 │   │   │   └── SignupPage.tsx     # 회원가입 페이지
 │   │   └── MemoPage.tsx           # 메모 상태 관리, 조회/작성/수정/삭제 처리
+│   │   └── MyPage.tsx              # 로그인 이메일을 표시하는 마이페이지
 │   ├── routes/
-│   │   ├── AppRouter.tsx          # 로그인, 회원가입, 메모 페이지 경로
+│   │   ├── AppRouter.tsx          # 로그인, 회원가입, 메모, 마이페이지 경로
 │   │   └── ProtectedRoute.tsx     # 인증되지 않은 메모 페이지 접근 제한
 │   ├── stores/
 │   │   └── authStore.ts            # access token과 이메일 전역 상태
