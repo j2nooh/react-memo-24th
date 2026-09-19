@@ -45,8 +45,9 @@
 - [x] Figma 기준 로그인 화면 및 입력 상태 구현
 - [x] 회원가입 화면 및 입력값 검증 구현
 - [x] 공통 API 요청 함수 및 인증 상태 저장소 구성
-- [ ] 로그인 및 회원가입 API 연동
-- [ ] API 로딩, 성공, 실패 상태별 UI 처리
+- [x] 로그인 API 연동 및 상태별 UI 처리
+- [x] 회원가입 API 연동 및 상태별 UI 처리
+- [x] 인증된 메모 페이지 접근 제어
 - [ ] 인증 화면 반응형 레이아웃 및 접근성 검증
 - [ ] 메모 작성, 수정, 삭제 API 연동
 - [ ] 마이페이지 UI 구현
@@ -95,7 +96,8 @@ react-memo-24th/
 │   │   │   └── SignupPage.tsx     # 회원가입 페이지
 │   │   └── MemoPage.tsx           # 메모 상태 관리, 조회/작성/수정/삭제 처리
 │   ├── routes/
-│   │   └── AppRouter.tsx          # 로그인, 회원가입, 메모 페이지 경로
+│   │   ├── AppRouter.tsx          # 로그인, 회원가입, 메모 페이지 경로
+│   │   └── ProtectedRoute.tsx     # 인증되지 않은 메모 페이지 접근 제한
 │   ├── stores/
 │   │   └── authStore.ts            # access token과 이메일 전역 상태
 │   ├── styles/
@@ -106,6 +108,7 @@ react-memo-24th/
 │   │   ├── auth.ts                # 인증 API 요청과 응답 타입
 │   │   └── memo.ts                # 메모 및 카테고리 타입
 │   ├── utils/
+│   │   ├── getRequestErrorMessage.ts # API, 네트워크 오류 메시지 정리
 │   │   ├── getTodayDate.ts       # 로컬 시간 기준 오늘 날짜
 │   │   ├── memoStorage.ts        # localStorage 저장, 복원 및 데이터 검증
 │   │   └── filterMemos.ts        # 검색어와 태그 조건으로 메모 필터링
