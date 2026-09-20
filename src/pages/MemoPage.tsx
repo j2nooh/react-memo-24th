@@ -1,19 +1,34 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ActionModal from '../components/common/ActionModal';
 import MemoDetailModal from '../components/memo/MemoDetailModal';
 import MemoEditor from '../components/memo/MemoEditor';
 import MemoList from '../components/memo/MemoList';
 import MemoToolbar from '../components/memo/MemoToolbar';
-import { useStoredMemos } from '../hooks/useStoredMemos';
+import { useApiMemos } from '../hooks/useApiMemos';
 import type { Memo, MemoCategory, MemoDraft } from '../types/memo';
 import { filterMemos } from '../utils/filterMemos';
+import { getRequestErrorMessage } from '../utils/getRequestErrorMessage';
 
 function MemoPage() {
-  const [memos, setMemos] = useStoredMemos();
+  const navigate = useNavigate();
+  const {
+    memos,
+    isLoading,
+    errorMessage,
+    loadMemos,
+    saveMemo,
+    editMemo,
+    toggleMemoPin,
+    removeMemo,
+  } = useApiMemos();
   const [isCreating, setIsCreating] = useState(false);
   const [editingMemoId, setEditingMemoId] = useState<Memo['id'] | null>(null);
   const [selectedMemoId, setSelectedMemoId] = useState<Memo['id'] | null>(null);
   const [isDeleteComplete, setIsDeleteComplete] = useState(false);
+  const [pinningMemoId, setPinningMemoId] = useState<Memo['id'] | null>(null);
+  const [pinErrorMessage, setPinErrorMessage] = useState('');
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
   const selectedMemo = memos.find((memo) => memo.id === selectedMemoId);
   const editingMemo = memos.find((memo) => memo.id === editingMemoId);
   const [keyword, setKeyword] = useState('');
@@ -27,33 +42,41 @@ function MemoPage() {
     setIsCreating(true);
   }
 
-  function handleTogglePin(memoId: Memo['id']) {
-    setMemos((previousMemos) =>
-      previousMemos.map((memo) =>
-        memo.id === memoId ? { ...memo, isPinned: !memo.isPinned } : memo,
-      ),
-    );
+  async function handleTogglePin(memoId: Memo['id']) {
+    const memo = memos.find((currentMemo) => currentMemo.id === memoId);
+    if (!memo || pinningMemoId !== null) return;
+
+    setPinningMemoId(memoId);
+
+    try {
+      await toggleMemoPin(memo);
+    } catch (error) {
+      setPinErrorMessage(getRequestErrorMessage(error));
+    } finally {
+      setPinningMemoId(null);
+    }
   }
 
-  function handleCreateMemo(draft: MemoDraft) {
-    const newMemo: Memo = { ...draft, id: crypto.randomUUID(), isPinned: false };
-    setMemos((previousMemos) => [newMemo, ...previousMemos]);
+  async function handleCreateMemo(draft: MemoDraft) {
+    await saveMemo(draft);
     setKeyword('');
     setCategory('');
   }
 
-  function handleUpdateMemo(draft: MemoDraft) {
-    if (!editingMemoId) return;
-    setMemos((previousMemos) =>
-      previousMemos.map((memo) => (memo.id === editingMemoId ? { ...memo, ...draft } : memo)),
-    );
+  async function handleUpdateMemo(draft: MemoDraft) {
+    if (!editingMemo) return;
+    await editMemo(editingMemo, draft);
     setEditingMemoId(null);
   }
 
-  function handleDeleteMemo(memoId: Memo['id']) {
-    setMemos((previousMemos) => previousMemos.filter((memo) => memo.id !== memoId));
-    setSelectedMemoId(null);
-    setIsDeleteComplete(true);
+  async function handleDeleteMemo(memoId: Memo['id']) {
+    try {
+      await removeMemo(memoId);
+      setSelectedMemoId(null);
+      setIsDeleteComplete(true);
+    } catch (error) {
+      setDeleteErrorMessage(getRequestErrorMessage(error));
+    }
   }
 
   return (
@@ -64,6 +87,7 @@ function MemoPage() {
         onKeywordChange={setKeyword}
         onCategoryChange={setCategory}
         onCreate={handleOpenCreate}
+        onProfile={() => navigate('/mypage')}
       />
       <section aria-labelledby="memo-list-title" className="flex w-full flex-1 flex-col gap-5">
         <h2 id="memo-list-title" className="sr-only">
@@ -72,28 +96,53 @@ function MemoPage() {
         <p role="status" aria-atomic="true" className="sr-only">
           {isFiltered ? `검색 결과 ${visibleMemos.length}개` : `전체 메모 ${visibleMemos.length}개`}
         </p>
-        {pinnedMemos.length > 0 && (
+        {isLoading && (
+          <div
+            role="status"
+            className="flex min-h-[420px] items-center justify-center text-body-medium text-gray-04"
+          >
+            메모를 불러오는 중입니다.
+          </div>
+        )}
+        {!isLoading && errorMessage && (
+          <div className="flex min-h-[420px] flex-col items-center justify-center gap-5 text-center">
+            <p role="alert" className="text-body-medium text-point">
+              {errorMessage}
+            </p>
+            <button
+              type="button"
+              onClick={() => void loadMemos()}
+              className="h-12 rounded-xl bg-blue-05 px-6 text-action-small font-bold text-white-00 transition-colors hover:bg-blue-06"
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+        {!isLoading && !errorMessage && pinnedMemos.length > 0 && (
           <MemoList
             memos={pinnedMemos}
             label="고정된 메모"
+            pinningMemoId={pinningMemoId}
             onTogglePin={handleTogglePin}
             onSelect={setSelectedMemoId}
             onCreate={handleOpenCreate}
           />
         )}
-        {unpinnedMemos.length > 0 && (
+        {!isLoading && !errorMessage && unpinnedMemos.length > 0 && (
           <MemoList
             memos={unpinnedMemos}
             label="고정되지 않은 메모"
+            pinningMemoId={pinningMemoId}
             onTogglePin={handleTogglePin}
             onSelect={setSelectedMemoId}
             onCreate={handleOpenCreate}
           />
         )}
-        {visibleMemos.length === 0 && (
+        {!isLoading && !errorMessage && visibleMemos.length === 0 && (
           <MemoList
             memos={visibleMemos}
             isFiltered={isFiltered}
+            pinningMemoId={pinningMemoId}
             onTogglePin={handleTogglePin}
             onSelect={setSelectedMemoId}
             onCreate={handleOpenCreate}
@@ -119,9 +168,25 @@ function MemoPage() {
       {isDeleteComplete && (
         <ActionModal
           title="해당 메모가 삭제되었습니다"
-          description="삭제된 메모는 휴지통에서 확인 가능합니다."
+          description="삭제된 메모는 복구할 수 없습니다."
           confirmLabel="확인"
           onConfirm={() => setIsDeleteComplete(false)}
+        />
+      )}
+      {pinErrorMessage && (
+        <ActionModal
+          title="메모 고정 상태를 변경하지 못했습니다"
+          description={pinErrorMessage}
+          confirmLabel="확인"
+          onConfirm={() => setPinErrorMessage('')}
+        />
+      )}
+      {deleteErrorMessage && (
+        <ActionModal
+          title="메모를 삭제하지 못했습니다"
+          description={deleteErrorMessage}
+          confirmLabel="확인"
+          onConfirm={() => setDeleteErrorMessage('')}
         />
       )}
     </main>

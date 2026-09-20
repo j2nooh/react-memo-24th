@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="background" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5590ff" />
+      <stop offset="1" stop-color="#0037a3" />
+    </linearGradient>
+    <filter id="shadow" x="8" y="8" width="52" height="54" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#001b51" flood-opacity=".35" />
+    </filter>
+  </defs>
+
+  <rect width="64" height="64" rx="16" fill="url(#background)" />
+  <circle cx="11" cy="12" r="5" fill="#aac8ff" fill-opacity=".45" />
+  <circle cx="55" cy="52" r="8" fill="#0055f5" />
+
+  <g filter="url(#shadow)" transform="rotate(-4 32 33)">
+    <path d="M15 13a5 5 0 0 1 5-5h21l10 10v30a6 6 0 0 1-6 6H20a5 5 0 0 1-5-5V13Z" fill="#fafafa" />
+    <path d="M41 8v8a4 4 0 0 0 4 4h6L41 8Z" fill="#aac8ff" />
+    <path d="M23 27h18M23 35h18M23 43h12" stroke="#0037a3" stroke-width="4" stroke-linecap="round" />
+  </g>
+
+  <circle cx="48" cy="17" r="10" fill="#ff5656" stroke="#fafafa" stroke-width="2" />
+  <path
+    d="m48 11.5 1.62 3.28 3.62.53-2.62 2.55.62 3.61L48 19.76l-3.24 1.71.62-3.61-2.62-2.55 3.62-.53L48 11.5Z"
+    fill="#fafafa"
+  />
+</svg>

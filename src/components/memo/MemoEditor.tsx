@@ -3,13 +3,14 @@ import backIcon from '../../assets/icons/back.svg';
 import barIcon from '../../assets/icons/bar.svg';
 import type { Memo, MemoCategory, MemoDraft } from '../../types/memo';
 import { getTodayDate } from '../../utils/getTodayDate';
+import { getRequestErrorMessage } from '../../utils/getRequestErrorMessage';
 import ActionModal from '../common/ActionModal';
 import Modal from '../common/Modal';
 import MemoCategorySelect from './MemoCategorySelect';
 
 type MemoEditorProps = {
   memo?: Memo;
-  onSave: (draft: MemoDraft) => void;
+  onSave: (draft: MemoDraft) => void | Promise<void>;
   onCancel: () => void;
 };
 
@@ -31,6 +32,8 @@ function MemoEditor({ memo, onSave, onCancel }: MemoEditorProps) {
   const [date, setDate] = useState(memo?.date ?? getTodayDate);
   const [exitAction, setExitAction] = useState<ExitAction | null>(null);
   const [isComplete, setIsComplete] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitErrorMessage, setSubmitErrorMessage] = useState('');
   const canSubmit = title.trim() !== '' && content.trim() !== '' && category !== '' && date !== '';
 
   function requestClose(action: ExitAction) {
@@ -41,11 +44,21 @@ function MemoEditor({ memo, onSave, onCancel }: MemoEditorProps) {
     setExitAction(action);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!canSubmit || !category) return;
-    onSave({ title: title.trim(), content: content.trim(), category, date });
-    if (!isEditing) setIsComplete(true);
+    if (!canSubmit || !category || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitErrorMessage('');
+
+    try {
+      await onSave({ title: title.trim(), content: content.trim(), category, date });
+      if (!isEditing) setIsComplete(true);
+    } catch (error) {
+      setSubmitErrorMessage(getRequestErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -78,7 +91,7 @@ function MemoEditor({ memo, onSave, onCancel }: MemoEditorProps) {
             ref={titleRef}
             aria-label="메모 제목"
             required
-            maxLength={40}
+            maxLength={50}
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="제목을 입력하세요..."
@@ -105,6 +118,7 @@ function MemoEditor({ memo, onSave, onCancel }: MemoEditorProps) {
           <textarea
             aria-label="메모 본문"
             required
+            maxLength={1000}
             value={content}
             onChange={(event) => setContent(event.target.value)}
             placeholder="본문을 입력하세요..."
@@ -121,10 +135,10 @@ function MemoEditor({ memo, onSave, onCancel }: MemoEditorProps) {
           </button>
           <button
             type="submit"
-            disabled={!canSubmit}
+            disabled={!canSubmit || isSubmitting}
             className="h-14 flex-1 rounded-[18px] bg-blue-05 text-action-small font-bold text-white-00 transition-colors hover:bg-blue-06 disabled:cursor-not-allowed disabled:bg-memo-daily disabled:hover:bg-memo-daily"
           >
-            {isEditing ? '수정 완료' : '작성 완료'}
+            {isSubmitting ? '저장 중...' : isEditing ? '수정 완료' : '작성 완료'}
           </button>
         </div>
       </form>
@@ -146,6 +160,14 @@ function MemoEditor({ memo, onSave, onCancel }: MemoEditorProps) {
           description="메인 화면에서 작성한 메모를 확인할 수 있습니다."
           confirmLabel="확인"
           onConfirm={onCancel}
+        />
+      )}
+      {submitErrorMessage && (
+        <ActionModal
+          title="메모를 저장하지 못했습니다"
+          description={submitErrorMessage}
+          confirmLabel="확인"
+          onConfirm={() => setSubmitErrorMessage('')}
         />
       )}
     </Modal>

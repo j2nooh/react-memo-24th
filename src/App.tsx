@@ -1,7 +1,7 @@
-import MemoPage from './pages/MemoPage';
+import AppRouter from './routes/AppRouter';
 
 function App() {
-  return <MemoPage />;
+  return <AppRouter />;
 }
 
 export default App;

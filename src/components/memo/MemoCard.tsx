@@ -4,11 +4,12 @@ import type { Memo } from '../../types/memo';
 
 type MemoCardProps = {
   memo: Memo;
-  onTogglePin: (memoId: Memo['id']) => void;
+  isPinning?: boolean;
+  onTogglePin: (memoId: Memo['id']) => void | Promise<void>;
   onSelect: (memoId: Memo['id']) => void;
 };
 
-function MemoCard({ memo, onTogglePin, onSelect }: MemoCardProps) {
+function MemoCard({ memo, isPinning = false, onTogglePin, onSelect }: MemoCardProps) {
   const category = memoCategoryStyles[memo.category];
   const starMask = `url("${starIcon}")`;
 
@@ -30,9 +31,10 @@ function MemoCard({ memo, onTogglePin, onSelect }: MemoCardProps) {
         <button
           type="button"
           onClick={() => onTogglePin(memo.id)}
+          disabled={isPinning}
           aria-label={memo.isPinned ? '메모 고정 해제' : '메모 고정'}
           aria-pressed={memo.isPinned}
-          className="relative z-10 size-7 shrink-0"
+          className="relative z-10 size-7 shrink-0 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <span
             aria-hidden="true"

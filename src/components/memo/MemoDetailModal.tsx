@@ -13,13 +13,26 @@ type MemoDetailModalProps = {
   memo: Memo;
   onClose: () => void;
   onEdit: () => void;
-  onDelete: () => void;
+  onDelete: () => void | Promise<void>;
 };
 
 function MemoDetailModal({ memo, onClose, onEdit, onDelete }: MemoDetailModalProps) {
   const titleId = useId();
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const category = memoCategoryStyles[memo.category];
+
+  async function handleDelete() {
+    if (isDeleting) return;
+
+    setIsDeleting(true);
+
+    try {
+      await onDelete();
+    } finally {
+      setIsDeleting(false);
+    }
+  }
 
   return (
     <Modal
@@ -73,11 +86,12 @@ function MemoDetailModal({ memo, onClose, onEdit, onDelete }: MemoDetailModalPro
       {isDeleteConfirmOpen && (
         <ActionModal
           title="메모를 삭제 하시겠습니까?"
-          description="삭제된 메모는 휴지통에서 확인 가능합니다."
+          description="삭제된 메모는 복구할 수 없습니다."
           cancelLabel="취소"
           confirmLabel="삭제"
           onCancel={() => setIsDeleteConfirmOpen(false)}
-          onConfirm={onDelete}
+          onConfirm={() => void handleDelete()}
+          isConfirming={isDeleting}
         />
       )}
     </Modal>
