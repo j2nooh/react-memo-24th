@@ -1,9 +1,20 @@
+export type ApiMemoCategory = 'DAILY' | 'WORK' | 'OTHER';
+
 export type ApiMemo = {
   id: number;
   title: string;
   content: string;
+  category: ApiMemoCategory;
+  isPinned: boolean;
   createdAt: string;
   updatedAt: string;
+};
+
+export type CreateMemoRequest = {
+  title: string;
+  content: string;
+  category: ApiMemoCategory;
+  isPinned: boolean;
 };
 
 export type MemoPageResponse = {

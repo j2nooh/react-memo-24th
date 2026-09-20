@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getMemos } from '../api/memos';
+import { createMemo, getMemos } from '../api/memos';
 import { ApiError } from '../api/client';
 import { useAuthStore } from '../stores/authStore';
-import type { Memo } from '../types/memo';
+import type { Memo, MemoDraft } from '../types/memo';
 import { getRequestErrorMessage } from '../utils/getRequestErrorMessage';
-import { mapApiMemoToMemo } from '../utils/mapApiMemoToMemo';
+import { mapApiMemoToMemo, mapMemoCategoryToApi } from '../utils/mapApiMemoToMemo';
 
 export function useApiMemos() {
   const navigate = useNavigate();
@@ -15,6 +15,12 @@ export function useApiMemos() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const [reloadCount, setReloadCount] = useState(0);
+
+  const handleUnauthorized = useCallback(() => {
+    clearAuth();
+    useAuthStore.persist.clearStorage();
+    navigate('/login', { replace: true });
+  }, [clearAuth, navigate]);
 
   const loadMemos = useCallback(() => {
     setIsLoading(true);
@@ -34,9 +40,7 @@ export function useApiMemos() {
         if (isActive) setMemos(response.content.map(mapApiMemoToMemo));
       } catch (error) {
         if (error instanceof ApiError && error.status === 401) {
-          clearAuth();
-          useAuthStore.persist.clearStorage();
-          navigate('/login', { replace: true });
+          handleUnauthorized();
           return;
         }
 
@@ -51,7 +55,35 @@ export function useApiMemos() {
     return () => {
       isActive = false;
     };
-  }, [accessToken, clearAuth, navigate, reloadCount]);
+  }, [accessToken, handleUnauthorized, reloadCount]);
 
-  return { memos, setMemos, isLoading, errorMessage, loadMemos };
+  const saveMemo = useCallback(
+    async (draft: MemoDraft) => {
+      if (accessToken === null) return;
+
+      try {
+        const apiMemo = await createMemo({
+          token: accessToken,
+          memo: {
+            title: draft.title,
+            content: draft.content,
+            category: mapMemoCategoryToApi(draft.category),
+            isPinned: false,
+          },
+        });
+        const memo = mapApiMemoToMemo(apiMemo);
+
+        setMemos((previousMemos) => [memo, ...previousMemos]);
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          handleUnauthorized();
+        }
+
+        throw error;
+      }
+    },
+    [accessToken, handleUnauthorized],
+  );
+
+  return { memos, setMemos, isLoading, errorMessage, loadMemos, saveMemo };
 }

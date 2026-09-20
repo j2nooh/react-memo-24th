@@ -11,7 +11,7 @@ import { filterMemos } from '../utils/filterMemos';
 
 function MemoPage() {
   const navigate = useNavigate();
-  const { memos, setMemos, isLoading, errorMessage, loadMemos } = useApiMemos();
+  const { memos, setMemos, isLoading, errorMessage, loadMemos, saveMemo } = useApiMemos();
   const [isCreating, setIsCreating] = useState(false);
   const [editingMemoId, setEditingMemoId] = useState<Memo['id'] | null>(null);
   const [selectedMemoId, setSelectedMemoId] = useState<Memo['id'] | null>(null);
@@ -37,9 +37,8 @@ function MemoPage() {
     );
   }
 
-  function handleCreateMemo(draft: MemoDraft) {
-    const newMemo: Memo = { ...draft, id: crypto.randomUUID(), isPinned: false };
-    setMemos((previousMemos) => [newMemo, ...previousMemos]);
+  async function handleCreateMemo(draft: MemoDraft) {
+    await saveMemo(draft);
     setKeyword('');
     setCategory('');
   }

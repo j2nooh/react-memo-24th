@@ -53,7 +53,9 @@
 - [x] 로그아웃 및 브라우저 인증 정보 삭제
 - [x] 메모 목록 API 조회 및 로딩, 오류 상태 처리
 - [x] 인증 만료 시 인증 정보 삭제 및 로그인 화면 이동
-- [ ] 메모 작성, 수정, 삭제 API 연동
+- [x] 서버 태그, 고정 상태 조회 및 표시
+- [x] 메모 작성 API 연동
+- [ ] 메모 수정, 삭제 API 연동
 
 ## 파일 구조
 
@@ -69,7 +71,7 @@ react-memo-24th/
 │   ├── api/
 │   │   ├── auth.ts                 # 로그인, 회원가입 API 요청
 │   │   ├── client.ts               # 공통 요청, 응답 및 오류 처리
-│   │   └── memos.ts                # 메모 목록 API 요청
+│   │   └── memos.ts                # 메모 목록 조회, 작성 API 요청
 │   ├── assets/
 │   │   ├── fonts/                  # Pretendard 폰트
 │   │   └── icons/                  # SVG 아이콘
@@ -91,7 +93,7 @@ react-memo-24th/
 │   │       ├── MemoSearchBar.tsx  # 검색어 입력 및 지우기
 │   │       └── MemoTagFilter.tsx  # 태그 선택 및 메뉴 열림 상태
 │   ├── hooks/
-│   │   ├── useApiMemos.ts        # 서버 메모 목록 조회 상태와 재시도
+│   │   ├── useApiMemos.ts        # 서버 메모 목록 조회, 작성 상태와 재시도
 │   ├── pages/
 │   │   ├── auth/
 │   │   │   ├── LoginPage.tsx      # 로그인 페이지
@@ -114,7 +116,7 @@ react-memo-24th/
 │   ├── utils/
 │   │   ├── getRequestErrorMessage.ts # API, 네트워크 오류 메시지 정리
 │   │   ├── getTodayDate.ts       # 로컬 시간 기준 오늘 날짜
-│   │   ├── mapApiMemoToMemo.ts   # 서버 메모를 카드 UI 데이터로 변환
+│   │   ├── mapApiMemoToMemo.ts   # 서버 카테고리, 메모를 카드 UI 데이터로 변환
 │   │   └── filterMemos.ts        # 검색어와 태그 조건으로 메모 필터링
 │   ├── App.tsx                    # 페이지 연결
 │   ├── index.css                  # Tailwind, 폰트 및 전역 스타일
