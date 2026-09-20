@@ -12,14 +12,23 @@ import { getRequestErrorMessage } from '../utils/getRequestErrorMessage';
 
 function MemoPage() {
   const navigate = useNavigate();
-  const { memos, setMemos, isLoading, errorMessage, loadMemos, saveMemo, editMemo, toggleMemoPin } =
-    useApiMemos();
+  const {
+    memos,
+    isLoading,
+    errorMessage,
+    loadMemos,
+    saveMemo,
+    editMemo,
+    toggleMemoPin,
+    removeMemo,
+  } = useApiMemos();
   const [isCreating, setIsCreating] = useState(false);
   const [editingMemoId, setEditingMemoId] = useState<Memo['id'] | null>(null);
   const [selectedMemoId, setSelectedMemoId] = useState<Memo['id'] | null>(null);
   const [isDeleteComplete, setIsDeleteComplete] = useState(false);
   const [pinningMemoId, setPinningMemoId] = useState<Memo['id'] | null>(null);
   const [pinErrorMessage, setPinErrorMessage] = useState('');
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
   const selectedMemo = memos.find((memo) => memo.id === selectedMemoId);
   const editingMemo = memos.find((memo) => memo.id === editingMemoId);
   const [keyword, setKeyword] = useState('');
@@ -60,10 +69,14 @@ function MemoPage() {
     setEditingMemoId(null);
   }
 
-  function handleDeleteMemo(memoId: Memo['id']) {
-    setMemos((previousMemos) => previousMemos.filter((memo) => memo.id !== memoId));
-    setSelectedMemoId(null);
-    setIsDeleteComplete(true);
+  async function handleDeleteMemo(memoId: Memo['id']) {
+    try {
+      await removeMemo(memoId);
+      setSelectedMemoId(null);
+      setIsDeleteComplete(true);
+    } catch (error) {
+      setDeleteErrorMessage(getRequestErrorMessage(error));
+    }
   }
 
   return (
@@ -84,7 +97,10 @@ function MemoPage() {
           {isFiltered ? `검색 결과 ${visibleMemos.length}개` : `전체 메모 ${visibleMemos.length}개`}
         </p>
         {isLoading && (
-          <div role="status" className="flex min-h-[420px] items-center justify-center text-body-medium text-gray-04">
+          <div
+            role="status"
+            className="flex min-h-[420px] items-center justify-center text-body-medium text-gray-04"
+          >
             메모를 불러오는 중입니다.
           </div>
         )}
@@ -152,7 +168,7 @@ function MemoPage() {
       {isDeleteComplete && (
         <ActionModal
           title="해당 메모가 삭제되었습니다"
-          description="삭제된 메모는 휴지통에서 확인 가능합니다."
+          description="삭제된 메모는 복구할 수 없습니다."
           confirmLabel="확인"
           onConfirm={() => setIsDeleteComplete(false)}
         />
@@ -163,6 +179,14 @@ function MemoPage() {
           description={pinErrorMessage}
           confirmLabel="확인"
           onConfirm={() => setPinErrorMessage('')}
+        />
+      )}
+      {deleteErrorMessage && (
+        <ActionModal
+          title="메모를 삭제하지 못했습니다"
+          description={deleteErrorMessage}
+          confirmLabel="확인"
+          onConfirm={() => setDeleteErrorMessage('')}
         />
       )}
     </main>

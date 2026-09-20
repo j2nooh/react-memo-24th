@@ -5,6 +5,7 @@ type ActionModalProps = {
   description: string;
   confirmLabel: string;
   onConfirm: () => void;
+  isConfirming?: boolean;
   cancelLabel?: string;
   onCancel?: () => void;
 };
@@ -14,6 +15,7 @@ function ActionModal({
   description,
   confirmLabel,
   onConfirm,
+  isConfirming = false,
   cancelLabel,
   onCancel,
 }: ActionModalProps) {
@@ -100,9 +102,10 @@ function ActionModal({
             ref={confirmButtonRef}
             type="button"
             onClick={onConfirm}
-            className="h-14 flex-1 rounded-xl bg-blue-05 px-6 text-action-small font-bold text-white-00 transition-colors hover:bg-blue-06"
+            disabled={isConfirming}
+            className="h-14 flex-1 rounded-xl bg-blue-05 px-6 text-action-small font-bold text-white-00 transition-colors hover:bg-blue-06 disabled:cursor-not-allowed disabled:bg-blue-04"
           >
-            {confirmLabel}
+            {isConfirming ? '처리 중...' : confirmLabel}
           </button>
         </div>
       </section>

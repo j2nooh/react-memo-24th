@@ -39,3 +39,15 @@ export function updateMemo({ token, memoId, memo }: UpdateMemoOptions) {
     body: memo,
   });
 }
+
+type DeleteMemoOptions = {
+  token: string;
+  memoId: string;
+};
+
+export function deleteMemo({ token, memoId }: DeleteMemoOptions) {
+  return request<null>(`/api/memos/${memoId}`, {
+    method: 'DELETE',
+    token,
+  });
+}

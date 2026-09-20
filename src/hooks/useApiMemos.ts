@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createMemo, getMemos, updateMemo } from '../api/memos';
+import { createMemo, deleteMemo, getMemos, updateMemo } from '../api/memos';
 import { ApiError } from '../api/client';
 import { useAuthStore } from '../stores/authStore';
 import type { Memo, MemoDraft } from '../types/memo';
@@ -151,6 +151,26 @@ export function useApiMemos() {
     [accessToken, handleUnauthorized],
   );
 
+  const removeMemo = useCallback(
+    async (memoId: Memo['id']) => {
+      if (accessToken === null) return;
+
+      try {
+        await deleteMemo({ token: accessToken, memoId });
+        setMemos((previousMemos) =>
+          previousMemos.filter((previousMemo) => previousMemo.id !== memoId),
+        );
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          handleUnauthorized();
+        }
+
+        throw error;
+      }
+    },
+    [accessToken, handleUnauthorized],
+  );
+
   return {
     memos,
     setMemos,
@@ -160,5 +180,6 @@ export function useApiMemos() {
     saveMemo,
     editMemo,
     toggleMemoPin,
+    removeMemo,
   };
 }
