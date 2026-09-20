@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createMemo, getMemos } from '../api/memos';
+import { createMemo, getMemos, updateMemo } from '../api/memos';
 import { ApiError } from '../api/client';
 import { useAuthStore } from '../stores/authStore';
 import type { Memo, MemoDraft } from '../types/memo';
@@ -85,5 +85,38 @@ export function useApiMemos() {
     [accessToken, handleUnauthorized],
   );
 
-  return { memos, setMemos, isLoading, errorMessage, loadMemos, saveMemo };
+  const editMemo = useCallback(
+    async (memo: Memo, draft: MemoDraft) => {
+      if (accessToken === null) return;
+
+      try {
+        const apiMemo = await updateMemo({
+          token: accessToken,
+          memoId: memo.id,
+          memo: {
+            title: draft.title,
+            content: draft.content,
+            category: mapMemoCategoryToApi(draft.category),
+            isPinned: memo.isPinned,
+          },
+        });
+        const updatedMemo = mapApiMemoToMemo(apiMemo);
+
+        setMemos((previousMemos) =>
+          previousMemos.map((previousMemo) =>
+            previousMemo.id === memo.id ? updatedMemo : previousMemo,
+          ),
+        );
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          handleUnauthorized();
+        }
+
+        throw error;
+      }
+    },
+    [accessToken, handleUnauthorized],
+  );
+
+  return { memos, setMemos, isLoading, errorMessage, loadMemos, saveMemo, editMemo };
 }

@@ -10,7 +10,7 @@ export type ApiMemo = {
   updatedAt: string;
 };
 
-export type CreateMemoRequest = {
+export type MemoRequest = {
   title: string;
   content: string;
   category: ApiMemoCategory;
