@@ -7,7 +7,8 @@ type MemoListProps = {
   memos: Memo[];
   isFiltered?: boolean;
   label?: string;
-  onTogglePin: (memoId: Memo['id']) => void;
+  pinningMemoId?: Memo['id'] | null;
+  onTogglePin: (memoId: Memo['id']) => void | Promise<void>;
   onSelect: (memoId: Memo['id']) => void;
   onCreate: () => void;
 };
@@ -16,6 +17,7 @@ function MemoList({
   memos,
   isFiltered = false,
   label = '작성된 메모',
+  pinningMemoId,
   onTogglePin,
   onSelect,
   onCreate,
@@ -68,7 +70,12 @@ function MemoList({
     <ul aria-label={label} className="flex flex-wrap gap-5">
       {memos.map((memo) => (
         <li key={memo.id} className="w-[285px] max-w-full">
-          <MemoCard memo={memo} onTogglePin={onTogglePin} onSelect={onSelect} />
+          <MemoCard
+            memo={memo}
+            isPinning={memo.id === pinningMemoId}
+            onTogglePin={onTogglePin}
+            onSelect={onSelect}
+          />
         </li>
       ))}
     </ul>

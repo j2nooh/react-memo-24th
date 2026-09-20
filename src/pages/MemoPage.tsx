@@ -8,14 +8,18 @@ import MemoToolbar from '../components/memo/MemoToolbar';
 import { useApiMemos } from '../hooks/useApiMemos';
 import type { Memo, MemoCategory, MemoDraft } from '../types/memo';
 import { filterMemos } from '../utils/filterMemos';
+import { getRequestErrorMessage } from '../utils/getRequestErrorMessage';
 
 function MemoPage() {
   const navigate = useNavigate();
-  const { memos, setMemos, isLoading, errorMessage, loadMemos, saveMemo, editMemo } = useApiMemos();
+  const { memos, setMemos, isLoading, errorMessage, loadMemos, saveMemo, editMemo, toggleMemoPin } =
+    useApiMemos();
   const [isCreating, setIsCreating] = useState(false);
   const [editingMemoId, setEditingMemoId] = useState<Memo['id'] | null>(null);
   const [selectedMemoId, setSelectedMemoId] = useState<Memo['id'] | null>(null);
   const [isDeleteComplete, setIsDeleteComplete] = useState(false);
+  const [pinningMemoId, setPinningMemoId] = useState<Memo['id'] | null>(null);
+  const [pinErrorMessage, setPinErrorMessage] = useState('');
   const selectedMemo = memos.find((memo) => memo.id === selectedMemoId);
   const editingMemo = memos.find((memo) => memo.id === editingMemoId);
   const [keyword, setKeyword] = useState('');
@@ -29,12 +33,19 @@ function MemoPage() {
     setIsCreating(true);
   }
 
-  function handleTogglePin(memoId: Memo['id']) {
-    setMemos((previousMemos) =>
-      previousMemos.map((memo) =>
-        memo.id === memoId ? { ...memo, isPinned: !memo.isPinned } : memo,
-      ),
-    );
+  async function handleTogglePin(memoId: Memo['id']) {
+    const memo = memos.find((currentMemo) => currentMemo.id === memoId);
+    if (!memo || pinningMemoId !== null) return;
+
+    setPinningMemoId(memoId);
+
+    try {
+      await toggleMemoPin(memo);
+    } catch (error) {
+      setPinErrorMessage(getRequestErrorMessage(error));
+    } finally {
+      setPinningMemoId(null);
+    }
   }
 
   async function handleCreateMemo(draft: MemoDraft) {
@@ -95,6 +106,7 @@ function MemoPage() {
           <MemoList
             memos={pinnedMemos}
             label="고정된 메모"
+            pinningMemoId={pinningMemoId}
             onTogglePin={handleTogglePin}
             onSelect={setSelectedMemoId}
             onCreate={handleOpenCreate}
@@ -104,6 +116,7 @@ function MemoPage() {
           <MemoList
             memos={unpinnedMemos}
             label="고정되지 않은 메모"
+            pinningMemoId={pinningMemoId}
             onTogglePin={handleTogglePin}
             onSelect={setSelectedMemoId}
             onCreate={handleOpenCreate}
@@ -113,6 +126,7 @@ function MemoPage() {
           <MemoList
             memos={visibleMemos}
             isFiltered={isFiltered}
+            pinningMemoId={pinningMemoId}
             onTogglePin={handleTogglePin}
             onSelect={setSelectedMemoId}
             onCreate={handleOpenCreate}
@@ -141,6 +155,14 @@ function MemoPage() {
           description="삭제된 메모는 휴지통에서 확인 가능합니다."
           confirmLabel="확인"
           onConfirm={() => setIsDeleteComplete(false)}
+        />
+      )}
+      {pinErrorMessage && (
+        <ActionModal
+          title="메모 고정 상태를 변경하지 못했습니다"
+          description={pinErrorMessage}
+          confirmLabel="확인"
+          onConfirm={() => setPinErrorMessage('')}
         />
       )}
     </main>

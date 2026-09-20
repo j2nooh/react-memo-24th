@@ -118,5 +118,47 @@ export function useApiMemos() {
     [accessToken, handleUnauthorized],
   );
 
-  return { memos, setMemos, isLoading, errorMessage, loadMemos, saveMemo, editMemo };
+  const toggleMemoPin = useCallback(
+    async (memo: Memo) => {
+      if (accessToken === null) return;
+
+      try {
+        const apiMemo = await updateMemo({
+          token: accessToken,
+          memoId: memo.id,
+          memo: {
+            title: memo.title,
+            content: memo.content,
+            category: mapMemoCategoryToApi(memo.category),
+            isPinned: !memo.isPinned,
+          },
+        });
+        const updatedMemo = mapApiMemoToMemo(apiMemo);
+
+        setMemos((previousMemos) =>
+          previousMemos.map((previousMemo) =>
+            previousMemo.id === memo.id ? updatedMemo : previousMemo,
+          ),
+        );
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          handleUnauthorized();
+        }
+
+        throw error;
+      }
+    },
+    [accessToken, handleUnauthorized],
+  );
+
+  return {
+    memos,
+    setMemos,
+    isLoading,
+    errorMessage,
+    loadMemos,
+    saveMemo,
+    editMemo,
+    toggleMemoPin,
+  };
 }
