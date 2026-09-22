@@ -5,11 +5,18 @@ import type { Memo } from '../../types/memo';
 type MemoCardProps = {
   memo: Memo;
   isPinning?: boolean;
+  isOpening?: boolean;
   onTogglePin: (memoId: Memo['id']) => void | Promise<void>;
-  onSelect: (memoId: Memo['id']) => void;
+  onSelect: (memoId: Memo['id']) => void | Promise<void>;
 };
 
-function MemoCard({ memo, isPinning = false, onTogglePin, onSelect }: MemoCardProps) {
+function MemoCard({
+  memo,
+  isPinning = false,
+  isOpening = false,
+  onTogglePin,
+  onSelect,
+}: MemoCardProps) {
   const category = memoCategoryStyles[memo.category];
   const starMask = `url("${starIcon}")`;
 
@@ -21,9 +28,10 @@ function MemoCard({ memo, isPinning = false, onTogglePin, onSelect }: MemoCardPr
         <h3 className="min-w-0 flex-1 text-heading-small font-bold" title={memo.title}>
           <button
             type="button"
-            onClick={() => onSelect(memo.id)}
+            onClick={() => void onSelect(memo.id)}
+            disabled={isOpening}
             aria-haspopup="dialog"
-            className="block w-full text-left after:absolute after:inset-0 after:rounded-[20px]"
+            className="block w-full text-left after:absolute after:inset-0 after:rounded-[20px] disabled:cursor-wait"
           >
             <span className="block truncate">{memo.title}</span>
           </button>

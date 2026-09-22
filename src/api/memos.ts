@@ -13,6 +13,15 @@ export function getMemos({ token, page = 0, size = 10 }: GetMemosOptions) {
   });
 }
 
+type GetMemoOptions = {
+  token: string;
+  memoId: string;
+};
+
+export function getMemo({ token, memoId }: GetMemoOptions) {
+  return request<ApiMemo>(`/api/memos/${memoId}`, { token });
+}
+
 type CreateMemoOptions = {
   token: string;
   memo: MemoRequest;

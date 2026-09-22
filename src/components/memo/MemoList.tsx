@@ -8,8 +8,9 @@ type MemoListProps = {
   isFiltered?: boolean;
   label?: string;
   pinningMemoId?: Memo['id'] | null;
+  openingMemoId?: Memo['id'] | null;
   onTogglePin: (memoId: Memo['id']) => void | Promise<void>;
-  onSelect: (memoId: Memo['id']) => void;
+  onSelect: (memoId: Memo['id']) => void | Promise<void>;
   onCreate: () => void;
 };
 
@@ -18,6 +19,7 @@ function MemoList({
   isFiltered = false,
   label = '작성된 메모',
   pinningMemoId,
+  openingMemoId,
   onTogglePin,
   onSelect,
   onCreate,
@@ -73,6 +75,7 @@ function MemoList({
           <MemoCard
             memo={memo}
             isPinning={memo.id === pinningMemoId}
+            isOpening={memo.id === openingMemoId}
             onTogglePin={onTogglePin}
             onSelect={onSelect}
           />

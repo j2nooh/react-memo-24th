@@ -18,6 +18,7 @@ function MemoPage() {
     errorMessage,
     loadMemos,
     saveMemo,
+    getMemoDetail,
     editMemo,
     toggleMemoPin,
     removeMemo,
@@ -27,7 +28,9 @@ function MemoPage() {
   const [selectedMemoId, setSelectedMemoId] = useState<Memo['id'] | null>(null);
   const [isDeleteComplete, setIsDeleteComplete] = useState(false);
   const [pinningMemoId, setPinningMemoId] = useState<Memo['id'] | null>(null);
+  const [openingMemoId, setOpeningMemoId] = useState<Memo['id'] | null>(null);
   const [pinErrorMessage, setPinErrorMessage] = useState('');
+  const [detailErrorMessage, setDetailErrorMessage] = useState('');
   const [deleteErrorMessage, setDeleteErrorMessage] = useState('');
   const selectedMemo = memos.find((memo) => memo.id === selectedMemoId);
   const editingMemo = memos.find((memo) => memo.id === editingMemoId);
@@ -40,6 +43,21 @@ function MemoPage() {
 
   function handleOpenCreate() {
     setIsCreating(true);
+  }
+
+  async function handleSelectMemo(memoId: Memo['id']) {
+    if (openingMemoId !== null) return;
+
+    setOpeningMemoId(memoId);
+
+    try {
+      const memo = await getMemoDetail(memoId);
+      if (memo) setSelectedMemoId(memo.id);
+    } catch (error) {
+      setDetailErrorMessage(getRequestErrorMessage(error));
+    } finally {
+      setOpeningMemoId(null);
+    }
   }
 
   async function handleTogglePin(memoId: Memo['id']) {
@@ -123,8 +141,9 @@ function MemoPage() {
             memos={pinnedMemos}
             label="고정된 메모"
             pinningMemoId={pinningMemoId}
+            openingMemoId={openingMemoId}
             onTogglePin={handleTogglePin}
-            onSelect={setSelectedMemoId}
+            onSelect={handleSelectMemo}
             onCreate={handleOpenCreate}
           />
         )}
@@ -133,8 +152,9 @@ function MemoPage() {
             memos={unpinnedMemos}
             label="고정되지 않은 메모"
             pinningMemoId={pinningMemoId}
+            openingMemoId={openingMemoId}
             onTogglePin={handleTogglePin}
-            onSelect={setSelectedMemoId}
+            onSelect={handleSelectMemo}
             onCreate={handleOpenCreate}
           />
         )}
@@ -143,8 +163,9 @@ function MemoPage() {
             memos={visibleMemos}
             isFiltered={isFiltered}
             pinningMemoId={pinningMemoId}
+            openingMemoId={openingMemoId}
             onTogglePin={handleTogglePin}
-            onSelect={setSelectedMemoId}
+            onSelect={handleSelectMemo}
             onCreate={handleOpenCreate}
           />
         )}
@@ -179,6 +200,14 @@ function MemoPage() {
           description={pinErrorMessage}
           confirmLabel="확인"
           onConfirm={() => setPinErrorMessage('')}
+        />
+      )}
+      {detailErrorMessage && (
+        <ActionModal
+          title="메모를 불러오지 못했습니다"
+          description={detailErrorMessage}
+          confirmLabel="확인"
+          onConfirm={() => setDetailErrorMessage('')}
         />
       )}
       {deleteErrorMessage && (
