@@ -67,6 +67,7 @@ export function useApiMemos() {
           memo: {
             title: draft.title,
             content: draft.content,
+            date: draft.date,
             category: mapMemoCategoryToApi(draft.category),
             isPinned: false,
           },
@@ -96,6 +97,7 @@ export function useApiMemos() {
           memo: {
             title: draft.title,
             content: draft.content,
+            date: draft.date,
             category: mapMemoCategoryToApi(draft.category),
             isPinned: memo.isPinned,
           },
@@ -129,6 +131,7 @@ export function useApiMemos() {
           memo: {
             title: memo.title,
             content: memo.content,
+            date: memo.date,
             category: mapMemoCategoryToApi(memo.category),
             isPinned: !memo.isPinned,
           },

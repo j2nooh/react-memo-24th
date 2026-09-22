@@ -23,7 +23,7 @@ export function mapApiMemoToMemo(memo: ApiMemo): Memo {
     title: memo.title,
     content: memo.content,
     category: memoCategoryByApiCategory[memo.category],
-    date: memo.createdAt.slice(0, 10),
+    date: memo.date,
     isPinned: memo.isPinned,
   };
 }

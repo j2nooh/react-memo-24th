@@ -4,6 +4,7 @@ export type ApiMemo = {
   id: number;
   title: string;
   content: string;
+  date: string;
   category: ApiMemoCategory;
   isPinned: boolean;
   createdAt: string;
@@ -13,6 +14,7 @@ export type ApiMemo = {
 export type MemoRequest = {
   title: string;
   content: string;
+  date: string;
   category: ApiMemoCategory;
   isPinned: boolean;
 };
