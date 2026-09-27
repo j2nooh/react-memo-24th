@@ -116,11 +116,11 @@ function SignupPage() {
             }}
           />
           <AuthField
-            label="비밀번호"
+            label="비밀번호 (8자 이상)"
             name="password"
             type="password"
             autoComplete="new-password"
-            placeholder="비밀번호를 입력하세요"
+            placeholder="비밀번호를 입력하세요 (8자 이상)"
             value={form.password}
             disabled={isSubmitting}
             errorMessage={errors.password ?? serverErrors.password}
