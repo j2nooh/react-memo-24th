@@ -25,8 +25,9 @@ const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function getSignupErrors({ email, password, passwordConfirmation }: SignupForm): SignupErrors {
   const errors: SignupErrors = {};
+  const trimmedEmail = email.trim();
 
-  if (!emailPattern.test(email)) {
+  if (!emailPattern.test(trimmedEmail)) {
     errors.email = '이메일 형식이 올바르지 않습니다.';
   }
 
@@ -81,7 +82,7 @@ function SignupPage() {
     setServerErrors({});
 
     try {
-      await signup({ email: form.email, password: form.password });
+      await signup({ email: form.email.trim(), password: form.password });
       navigate('/login', { replace: true });
     } catch (error) {
       setServerErrors(getSignupServerErrors(error));

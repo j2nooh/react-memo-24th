@@ -29,9 +29,10 @@ function LoginPage() {
     setErrorMessage('');
 
     try {
-      const { accessToken } = await login({ email, password });
+      const trimmedEmail = email.trim();
+      const { accessToken } = await login({ email: trimmedEmail, password });
 
-      setAuth({ accessToken, email });
+      setAuth({ accessToken, email: trimmedEmail });
       navigate('/memos', { replace: true });
     } catch (error) {
       if (error instanceof ApiError) {
