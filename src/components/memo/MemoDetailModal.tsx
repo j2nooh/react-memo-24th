@@ -1,4 +1,4 @@
-import { useId, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import barIcon from '../../assets/icons/bar.svg';
 import deleteIcon from '../../assets/icons/delete.svg';
 import exitIcon from '../../assets/icons/exit.svg';
@@ -18,6 +18,7 @@ type MemoDetailModalProps = {
 
 function MemoDetailModal({ memo, onClose, onEdit, onDelete }: MemoDetailModalProps) {
   const titleId = useId();
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const category = memoCategoryStyles[memo.category];
@@ -37,6 +38,7 @@ function MemoDetailModal({ memo, onClose, onEdit, onDelete }: MemoDetailModalPro
   return (
     <Modal
       labelledBy={titleId}
+      initialFocusRef={titleRef}
       onClose={onClose}
       className={`h-[min(556px,calc(100dvh-32px))] max-h-none w-[min(556px,calc(100vw-32px))] max-w-none overflow-y-auto rounded-3xl px-11 py-10 text-white-00 shadow-[0_4px_4px_rgb(0_0_0/25%)] max-sm:px-6 max-sm:py-7 ${category.card}`}
     >
@@ -44,6 +46,8 @@ function MemoDetailModal({ memo, onClose, onEdit, onDelete }: MemoDetailModalPro
         <header className="flex shrink-0 items-start justify-between gap-8">
           <h2
             id={titleId}
+            ref={titleRef}
+            tabIndex={-1}
             className="min-w-0 text-heading-large font-bold wrap-anywhere whitespace-pre-wrap"
           >
             {memo.title}
